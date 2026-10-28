@@ -1,0 +1,31 @@
+# Architecture hyperparameters for each IntraBraM variant.
+# Mirrors the original ``INTRABRAM_PARAMS`` constant from pretrain.py.
+# ``embedder`` is a key into config/model/embedder.yaml.
+
+intrabram-large:
+  n_dim: 384
+  window_size: 256
+  max_sec: 32
+  depth: 6
+  embedder: intrabram-large
+
+intrabram-mid:
+  n_dim: 256
+  window_size: 256
+  max_sec: 32
+  depth: 6
+  embedder: intrabram-mid
+
+intrabram-base:
+  n_dim: 192
+  window_size: 256
+  max_sec: 32
+  depth: 4
+  embedder: intrabram-base
+
+intrabram-small:
+  n_dim: 128
+  window_size: 256
+  max_sec: 32
+  depth: 2
+  embedder: intrabram-small

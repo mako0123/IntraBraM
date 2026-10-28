@@ -1,0 +1,22 @@
+# Patch-embedder (CNN) layer configurations for each IntraBraM variant.
+# Mirrors the original ``EMBEDDER_PARAMS`` constant from models/intrabram.py.
+
+intrabram-large:
+  layer0: {input_channel: 1,   output_channel: 128, kernel_size: 17, padding: 8}
+  layer1: {input_channel: 128, output_channel: 128, kernel_size: 5,  padding: 2}
+  layer2: {input_channel: 128, output_channel: 96,  kernel_size: 3,  padding: 1}
+
+intrabram-mid:
+  layer0: {input_channel: 1,   output_channel: 96,  kernel_size: 17, padding: 8}
+  layer1: {input_channel: 96,  output_channel: 128, kernel_size: 5,  padding: 2}
+  layer2: {input_channel: 128, output_channel: 96,  kernel_size: 3,  padding: 1}
+
+intrabram-base:
+  layer0: {input_channel: 1,   output_channel: 96,  kernel_size: 9,  padding: 4}
+  layer1: {input_channel: 96,  output_channel: 128, kernel_size: 5,  padding: 2}
+  layer2: {input_channel: 128, output_channel: 96,  kernel_size: 3,  padding: 1}
+
+intrabram-small:
+  layer0: {input_channel: 1,   output_channel: 64,  kernel_size: 9,  padding: 4}
+  layer1: {input_channel: 64,  output_channel: 64,  kernel_size: 5,  padding: 2}
+  layer2: {input_channel: 64,  output_channel: 64,  kernel_size: 3,  padding: 1}
