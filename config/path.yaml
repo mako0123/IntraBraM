@@ -1,11 +1,11 @@
 # Filesystem paths used by the model code. Update these before running on a new machine.
 
 # Directory where pretraining saves encoder checkpoints (IntraBraM.save_encoder).
-checkpoint_dir: /mnt/ieegdisk/intrabram_checkpoints
+checkpoint_dir: PATH_TO_CHECKPOINTS
 
 # Pretrained encoder checkpoints, keyed by model variant.
 checkpoints:
-  intrabram-large: /mnt/ieegdisk/intrabram_checkpoints/20260612_013303_131495intrabram-large.ckpt
-  intrabram-mid:   /mnt/ieegdisk/intrabram_checkpoints/20260611_011554_683651intrabram-mid.ckpt
-  intrabram-base:  /mnt/ieegdisk/intrabram_checkpoints/20260610_002138_767340intrabram-base.ckpt
-  intrabram-small: /mnt/ieegdisk/intrabram_checkpoints/20260609_003136_006373intrabram-small.ckpt
+  intrabram-large: PATH_TO_LARGE
+  intrabram-mid:   PATH_TO_MID
+  intrabram-base:  PATH_TO_BASE
+  intrabram-small: PATH_TO_SMALL
