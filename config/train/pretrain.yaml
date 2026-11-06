@@ -3,12 +3,18 @@
 batch_size: 8
 num_workers: 8
 max_epochs: 5
-accelerator: gpu
 devices: [0, 1, 2, 3, 4, 5, 6, 7]
+seed: 42
 
 checkpoint:
   dirpath: ./checkpoints
   every_n_train_steps: 5000
+
+# Dummy dataset parameters used by script/pretrain.py.
+dataset:
+  num_channels: 224
+  segment_len: 1280    # must be a multiple of window_size (256)
+  num_samples: 1024
 
 optimizer:
   lr: 1.0e-4
@@ -18,3 +24,7 @@ optimizer:
 # Optional training switches (set to true to disable the matching loss term).
 no_reconstruction: false
 no_contrastive: false
+
+# Contrastive/reconstruction hyperparameters forwarded to IntraBraM.
+mask_rate: 0.5
+temperature: 0.7

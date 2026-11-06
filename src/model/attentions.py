@@ -162,6 +162,7 @@ class SelfAttentionLayer(nn.Module):
         **kwargs,
     ):
         super().__init__()
+        
         self.n_dim = n_dim
         self.n_head = n_head
         self.ffn_dim = ffn_dim

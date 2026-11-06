@@ -3,8 +3,8 @@
 from src.model.attentions import StackedCrossAttentionLayers, StackedEncoderLayers
 from src.model.classifier import Classifier
 from src.model.decoder import Decoder
-from src.model.encoder import Encoder, build_encoder_from_checkpoint
-from src.model.finetune_model import FinetuneModel
+from src.model.encoder import Encoder, build_encoder_from_checkpoint, build_encoder_from_config
+from src.model.finetune_model import FinetuneModel, build_finetune_model
 from src.model.patch_embedder import CNNPatchEmbedder, SingleChannelCNNBlock
 from src.model.positional_encodings import MixedPositionalEncoding, SinusoidalPositionalEncoding
 from src.model.pretrain_model import IntraBraM
@@ -17,6 +17,8 @@ __all__ = [
     "SubjectAdapter",
     "IntraBraM",
     "FinetuneModel",
+    "build_encoder_from_config",
+    "build_finetune_model",
     "CNNPatchEmbedder",
     "SingleChannelCNNBlock",
     "MixedPositionalEncoding",

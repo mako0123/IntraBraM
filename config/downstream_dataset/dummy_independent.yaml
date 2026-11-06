@@ -1,0 +1,19 @@
+# Dummy downstream dataset config for the INDEPENDENT protocol.
+# Subjects are divided evenly into n_fold folds for n-fold cross-validation.
+
+task: dummy
+dataset: dummy
+path_to_dataset: ""      # dummy dataset has no real data path
+
+frequency: 256
+segment_t: 5             # seconds; segment_len = segment_t * frequency
+max_channel_num: 224
+overlap: 0.0
+use_pos: false
+n_cls: 2
+num_samples: 1024
+num_subjects: 8          # must be divisible by n_fold
+seed: 42
+
+# dependency=independent split parameters
+n_fold: 4

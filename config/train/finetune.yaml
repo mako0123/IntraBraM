@@ -1,10 +1,15 @@
-# Default finetuning configuration. Mirrors the constants in the original finetune.py.
+# Default finetuning / evaluation configuration.
 
 epochs: 3
 batch_size: 8
 num_workers: 8
 seed: 42
+train_ratio: 0.8
 devices: [0, 1, 2, 3, 4, 5, 6, 7]
+
+# Whether to add the subject-adapter bias path and to load pretrained encoder weights.
+use_bias: false
+load_weights: true
 
 optimizer:
   classifier_lr: 1.0e-4
@@ -17,15 +22,3 @@ optimizer:
   query_weight_decay: 0.01
   projection_lr: 3.0e-4
   projection_weight_decay: 0.001
-
-# Finetune variants. ``pretrain_path`` is an alias into config/path.yaml.
-models:
-  intrabram-large:         {pretrain_path: intrabram-large, use_bias: false, load_weights: true}
-  intrabram-mid:           {pretrain_path: intrabram-mid,   use_bias: false, load_weights: true}
-  intrabram-base:          {pretrain_path: intrabram-base,  use_bias: false, load_weights: true}
-  intrabram-small:         {pretrain_path: intrabram-small, use_bias: false, load_weights: true}
-  intrabram-base-nopretrain: {pretrain_path: intrabram-base, use_bias: true, load_weights: false}
-  intrabram-base-usebias:  {pretrain_path: intrabram-base,  use_bias: true, load_weights: true}
-  intrabram-mid-usebias:   {pretrain_path: intrabram-mid,   use_bias: true, load_weights: true}
-  intrabram-large-usebias: {pretrain_path: intrabram-large, use_bias: true, load_weights: true}
-  intrabram-small-usebias: {pretrain_path: intrabram-small, use_bias: true, load_weights: true}

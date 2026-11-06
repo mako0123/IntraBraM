@@ -1,11 +1,4 @@
 # Filesystem paths used by the model code. Update these before running on a new machine.
 
-# Directory where pretraining saves encoder checkpoints (IntraBraM.save_encoder).
-checkpoint_dir: PATH_TO_CHECKPOINTS
-
-# Pretrained encoder checkpoints, keyed by model variant.
-checkpoints:
-  intrabram-large: PATH_TO_LARGE
-  intrabram-mid:   PATH_TO_MID
-  intrabram-base:  PATH_TO_BASE
-  intrabram-small: PATH_TO_SMALL
+# Directory where pretraining / finetuning saves checkpoints.
+checkpoint_dir: ./checkpoints

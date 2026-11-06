@@ -21,6 +21,19 @@ _PATH_CONFIG_PATH = os.path.join(CONFIG_DIR, "path.yaml")
 _PRETRAIN_CONFIG_PATH = os.path.join(CONFIG_DIR, "train", "pretrain.yaml")
 _FINETUNE_CONFIG_PATH = os.path.join(CONFIG_DIR, "train", "finetune.yaml")
 
+DOWNSTREAM_DATASET_DIR = os.path.join(CONFIG_DIR, "downstream_dataset")
+DEFAULT_DOWNSTREAM_TASK = "dummy"
+
+
+def get_downstream_dataset_config_path(task: str, dependency: str) -> str:
+    """Return the YAML path for a task/protocol pair (e.g. ``dummy``/``dependent``)."""
+    return os.path.join(DOWNSTREAM_DATASET_DIR, f"{task}_{dependency}.yaml")
+
+
+def get_default_downstream_dataset_config_path(dependency: str) -> str:
+    """Return the default downstream dataset YAML for a protocol."""
+    return get_downstream_dataset_config_path(DEFAULT_DOWNSTREAM_TASK, dependency)
+
 
 def load_yaml(path: str) -> Dict[str, Any]:
     """Load a YAML file into a dictionary."""
@@ -54,14 +67,6 @@ def get_path_config() -> Dict[str, Any]:
     return load_yaml(_PATH_CONFIG_PATH)
 
 
-def get_checkpoint_path(name: str) -> str:
-    """Resolve a checkpoint alias (from ``config/path.yaml``) to an absolute path."""
-    checkpoints = get_path_config()["checkpoints"]
-    if name not in checkpoints:
-        raise KeyError(f"Unknown checkpoint alias '{name}'. Available: {sorted(checkpoints)}")
-    return checkpoints[name]
-
-
 def get_checkpoint_dir() -> str:
     """Return the directory where pretraining saves encoder checkpoints."""
     return get_path_config()["checkpoint_dir"]
@@ -75,3 +80,10 @@ def get_pretrain_config() -> Dict[str, Any]:
 def get_finetune_config() -> Dict[str, Any]:
     """Return the default finetuning configuration."""
     return load_yaml(_FINETUNE_CONFIG_PATH)
+
+
+def load_downstream_dataset_config(path: str) -> Dict[str, Any]:
+    """Load a downstream dataset YAML config from an explicit path."""
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Downstream dataset config not found: {path}")
+    return load_yaml(path)

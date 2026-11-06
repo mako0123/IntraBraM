@@ -1,0 +1,17 @@
+# Runtime dependencies for the IntraBraM released code.
+# Versions mirror the reference LaBram conda environment (GPU build of torch expected;
+# the reference env uses torch 2.9.0+cu128).
+
+# Core deep learning stack
+torch==2.9.0
+lightning==2.5.5
+
+# Model / data / config utilities
+numpy==2.2.6
+einops==0.8.1
+pandas==2.3.3
+scikit-learn==1.7.2
+PyYAML==6.0.3
+
+# TensorBoard logging (used by script/pretrain.py)
+tensorboard==2.19.0

@@ -5,6 +5,7 @@ from datetime import datetime
 
 import lightning as L
 import torch
+import yaml
 from torch import optim
 
 from src.config import get_checkpoint_dir, get_embedder_params
@@ -42,6 +43,7 @@ class IntraBraM(L.LightningModule):
         self.depth = depth
         self.embedder_params = get_embedder_params(embedder_params)
         self.version_name = embedder_params
+        self._run_dir: str | None = None  # lazily created on the first save
 
         self._train_no_reconstruction = _train_no_reconstruction
         self._train_no_contrastive = _train_no_contrastive
@@ -121,12 +123,38 @@ class IntraBraM(L.LightningModule):
         # Only the main process saves when running under DDP.
         if torch.distributed.is_initialized() and torch.distributed.get_rank() != 0:
             return
-        checkpoint_dir = get_checkpoint_dir()
-        os.makedirs(checkpoint_dir, exist_ok=True)
-        path = os.path.join(
-            checkpoint_dir, datetime.now().strftime("%Y%m%d_%H%M%S_%f") + self.version_name + ".ckpt"
-        )
+        run_dir = self._get_run_dir()
+        path = os.path.join(run_dir, f"epoch-{self.current_epoch}.ckpt")
         torch.save({"state_dict": self.encoder.state_dict(), "config": self.config_dict}, path)
+
+    def _get_run_dir(self) -> str:
+        """Create (once) this run's checkpoint directory and save its config.
+
+        The directory is named ``{version_name}-{timestamp}`` under the configured
+        ``checkpoint_dir``; ``config.yaml`` inside it holds only this version's
+        model + embedder config.
+        """
+        if self._run_dir is None:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            self._run_dir = os.path.join(get_checkpoint_dir(), f"{self.version_name}-{timestamp}")
+            os.makedirs(self._run_dir, exist_ok=True)
+            self._save_config(self._run_dir)
+        return self._run_dir
+
+    def _save_config(self, run_dir: str) -> None:
+        """Write the config of the version actually used into the run directory."""
+        run_config = {
+            "version": self.version_name,
+            "model": {
+                "n_dim": self.n_dim,
+                "window_size": self.window_size,
+                "max_sec": self.max_sec,
+                "depth": self.depth,
+            },
+            "embedder": self.embedder_params,
+        }
+        with open(os.path.join(run_dir, "config.yaml"), "w", encoding="utf-8") as f:
+            yaml.safe_dump(run_config, f, sort_keys=False)
 
     @classmethod
     def load_encoder(cls, path: str, load_weights: bool = True) -> Encoder:

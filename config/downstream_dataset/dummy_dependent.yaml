@@ -1,0 +1,19 @@
+# Dummy downstream dataset config for the DEPENDENT protocol.
+# Each subject is split independently into train/test; one run per subject.
+
+task: dummy
+dataset: dummy
+path_to_dataset: ""      # dummy dataset has no real data path
+
+frequency: 256
+segment_t: 5             # seconds; segment_len = segment_t * frequency
+max_channel_num: 224
+overlap: 0.0
+use_pos: false
+n_cls: 2
+num_samples: 1024
+num_subjects: 8
+seed: 42
+
+# dependency=dependent split parameters
+train_ratio: 0.8

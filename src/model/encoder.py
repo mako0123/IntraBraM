@@ -38,6 +38,7 @@ class Encoder(nn.Module):
         self.depth = depth
         self.encode_n_tok = 16
         self._train_temperature = _train_temperature
+        self.embedder_params = embedder_params  # kept for config export (not a module)
 
         # Learned tokens. ``mask_token`` is unused by the encoder itself but is
         # kept for backward compatibility with released checkpoints.
@@ -47,12 +48,13 @@ class Encoder(nn.Module):
         # modules
         self.embedder = CNNPatchEmbedder(embedder_params, window_size=self.window_size, n_dim=self.n_dim)
         self.mixed_positional_encoding = MixedPositionalEncoding(n_dim=self.n_dim)
-        # Unused, kept for backward compatibility with released checkpoints.
-        self.sin_position_encoder = SinusoidalPositionalEncoding(n_dim=self.n_dim, max_len=320)
         self.temporal_encoder = SinusoidalPositionalEncoding(n_dim=self.n_dim, max_len=self.max_sec)
-
+        
         self.encoder = StackedEncoderLayers(n_dim=self.n_dim, n_head=8, depth=self.depth)
         self.embedding_projection = nn.Linear(in_features=self.n_dim, out_features=8)
+
+        # Unused, kept for backward compatibility with released checkpoints.
+        self.sin_position_encoder = SinusoidalPositionalEncoding(n_dim=self.n_dim, max_len=320)
 
     def forward(self, x: torch.Tensor, valid_mask: torch.BoolTensor, pos: torch.Tensor | None = None):
         # Build two noisy views of the same windows for contrastive pretraining.
@@ -181,20 +183,29 @@ class Encoder(nn.Module):
         ]
 
 
+def build_encoder_from_config(config: dict) -> Encoder:
+    """Build an :class:`Encoder` from a config dict.
+
+    ``embedder_params`` may be a variant name (resolved here) or an already
+    resolved layer-config dict.
+    """
+    from src.config import get_embedder_params
+
+    config = dict(config)
+    embedder = config.get("embedder_params")
+    if isinstance(embedder, str):
+        config["embedder_params"] = get_embedder_params(embedder)
+    return Encoder(**config)
+
+
 def build_encoder_from_checkpoint(path_to_ckpt: str, load_weights: bool = True) -> Encoder:
     """Build an :class:`Encoder` from a pretrain checkpoint.
 
     The checkpoint stores ``{"state_dict": ..., "config": ...}`` where ``config``
     holds the constructor arguments (with ``embedder_params`` as a variant name).
     """
-    from src.config import get_embedder_params
-
     loaded_content = torch.load(path_to_ckpt, map_location="cpu", weights_only=False)
-    config = dict(loaded_content["config"])
-    # Resolve the embedder variant name to its layer config.
-    config["embedder_params"] = get_embedder_params(config["embedder_params"])
-
-    encoder = Encoder(**config)
+    encoder = build_encoder_from_config(loaded_content["config"])
     if load_weights:
         encoder.load_state_dict(loaded_content["state_dict"])
     return encoder
